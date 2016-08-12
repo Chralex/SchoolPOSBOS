@@ -3,6 +3,7 @@ package DatabaseModel;
 import DatabaseModel.TypeMapping.TypeMap;
 import DatabaseModel.Annotations.*;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.JDBCType;
@@ -11,9 +12,13 @@ import java.sql.SQLException;
 
 import com.mysql.jdbc.NotImplemented;
 
-public class Table extends DatabaseObject {
+public class Table extends DatabaseObject implements Serializable {
 
-	public String type = "TABLE";
+	/**
+	 * 
+	 */
+	private transient  static final long serialVersionUID = 1L;
+	public transient String type = "TABLE";
 	
 	// Reflection magic.
 	public String toString() {
