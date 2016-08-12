@@ -27,7 +27,7 @@ public class DatabaseConnection {
 		//Class.forName("com.mysql.jdbc.Driver").newInstance();
 		//DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 		
-		connection = DriverManager.getConnection("jdbc:mysql://localhost/Test", connectionInfo);
+		connection = DriverManager.getConnection("jdbc:mysql://10.11.20.4/Test", connectionInfo);
 		connection.setAutoCommit(false);
 		if (connection.isClosed())
 			System.out.println("Closed?");
