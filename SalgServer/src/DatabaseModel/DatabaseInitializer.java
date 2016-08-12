@@ -25,6 +25,8 @@ public class DatabaseInitializer {
 			for (Table data : model.tableData) {
 				db.insert(data);
 			}
+		
+		db.connection.commit();
 	}
 	
 	public static class FieldNotInitializedException extends Exception {
