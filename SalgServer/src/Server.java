@@ -8,9 +8,9 @@ import DatabaseModel.Tables.Product;
 
 public class Server {
 	
-	public static int PortNumber = 2035;
+	public int portNumber = 2035;
 
-	private static ServerSocket MyService; 
+	private ServerSocket myService; 
 	
 	Server() {
 		// TODO Auto-generated method stub
@@ -19,9 +19,9 @@ public class Server {
 		}
 		catch (IOException exception) {
 			System.out.println(exception);
-			if (MyService != null && MyService.isClosed() == false) {
+			if (myService != null && myService.isClosed() == false) {
 				try  {
-					MyService.close();
+					myService.close();
 				}
 				catch (IOException ioCloseException) {
 					System.out.println(ioCloseException);		
@@ -30,9 +30,9 @@ public class Server {
 		}
 	}
 	
-	public static void Run() throws IOException
+	public void Run() throws IOException
 	{
-		MyService = new ServerSocket(PortNumber);
+		myService = new ServerSocket(portNumber);
 		
     	DatabaseConnection db;
     	ArrayList<Product> products;
@@ -56,7 +56,7 @@ public class Server {
 		// Next up send the individual OutputFileStream bytes to the client. And parse it there.
 	    while(true)
 	    {
-		    Socket s=MyService.accept();
+		    Socket s=myService.accept();
 		    
 		    ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 		    oos.writeObject(products);
