@@ -42,6 +42,7 @@ public class Table extends DatabaseObject implements Serializable {
 		System.out.println("DROP TABLE " + this.getClass().asSubclass(this.getClass()).getSimpleName());
 		PreparedStatement statement = db.connection.prepareStatement("DROP TABLE " + this.getClass().asSubclass(this.getClass()).getSimpleName());
 		statement.executeUpdate();
+		db.connection.commit();
 	}
 	
 	public void Create(DatabaseConnection db) throws SQLException {
