@@ -38,7 +38,7 @@ public class Server {
     	ArrayList<Product> products;
 
     	try  {
-    		db = new DatabaseConnection(true);
+    		db = new DatabaseConnection();
     	}
     	catch (SQLException exception) {
     		System.out.println("Failed to connect to database - " + exception);

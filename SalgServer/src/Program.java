@@ -19,7 +19,7 @@ public class Program {
 	
 	public static void InitializationChecks() {
 		try {
-			Program.connection = new DatabaseConnection(true);
+			Program.connection = new DatabaseConnection();
 			ArrayList<Table> tables = new ArrayList<Table>();
 			tables.add(new Licence());
 			tables.add(new Purchase());
