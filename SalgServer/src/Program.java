@@ -1,7 +1,6 @@
 import java.sql.*;
 
 import java.util.ArrayList;
-
 import DatabaseModel.*;
 import DatabaseModel.DatabaseInitializer.FieldNotInitializedException;
 import DatabaseModel.Tables.*;
@@ -15,7 +14,7 @@ public class Program {
 		InitializationChecks();
 		System.out.println("===FINALIZED===");
 		
-		Server server = new Server();
+		new Server();
 	}
 	
 	public static void InitializationChecks() {
@@ -66,6 +65,64 @@ public class Program {
 		}
 	}
 	
+//	SQLExpression<Product> expression = new SQLExpression<Product>(Product.class);
+//	try {
+//		DatabaseConnection testConnection = new DatabaseConnection(true);
+//		List<Product> products = testConnection.executeSelect(expression);
+//		
+//		for (Product product : products) {
+//			System.out.println(product);
+//		}
+//	}
+//	catch (SQLException exception ) {
+//		System.out.println(exception);
+//		return;
+//	}
+//	Product product = new Product();
+//	product.id = 1;
+//	
+//	expression.where(product, 
+//		new Field[] {
+//			Product.class.getDeclaredField("id")
+//		}
+//	);
+//	DatabaseConnection db = new DatabaseConnection(true);
+//	
+//	List<Product> products = db.select(expression);
+//	
+//	for (Product p : products) {
+//		System.out.println(product);
+//	}
+//	
+//	db.delete(expression);
+//	
+//	products = db.select(expression);
+//	
+//	for (Product p : products) {
+//		System.out.println(product);
+//	}
+//	
+//	Product instance = new Product();
+//	instance.id = 1;
+//	instance.name = "Kaffemaskine";
+//	
+//	SQLExpression<Product> updateProduct = new SQLExpression<Product>(Product.class);
+//	updateProduct.select(new Field[] {
+//		Product.class.getField("name")
+//	});
+//	updateProduct.where(instance, new Field[] {
+//		Product.class.getField("id")
+//	});
+//	
+//	try {
+//		db.update(instance, updateProduct);
+//	} catch (IllegalArgumentException | IllegalAccessException e) {
+//		e.printStackTrace();
+//	}
+	
+	//new Product().Drop(db);
+	
+	//db.closeConnection();
 	
 	
 	//	ArrayList<Product> test = connection.select(Product.class);
