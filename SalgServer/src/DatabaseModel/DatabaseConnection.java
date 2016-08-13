@@ -3,9 +3,11 @@ package DatabaseModel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.lang.reflect.*;
 
+import DatabaseModel.SQLExpressions.SQLExpression;
 import DatabaseModel.Tables.Product;
 
 public class DatabaseConnection {
@@ -182,6 +184,70 @@ public class DatabaseConnection {
 		return items;
 	}
 	
+	public <T extends DatabaseObject> List<T> select(SQLExpression<T> expression) throws SQLException {
+		List<T> items = new ArrayList<T>();
+		
+		ResultSet results = connection.prepareStatement(expression.toString()).executeQuery();
+		
+		ResultSetMetaData metaData = results.getMetaData();
+		
+		int columns = metaData.getColumnCount(), max = DatabaseConnection.getResultSize(results);
+		
+		String[] columnNames = new String[columns];
+		
+		HashMap<String, Object[]> values = new HashMap<String, Object[]>();
+
+		for (int i = 1; i <= columns; i++) {
+			values.put(metaData.getColumnName(i), new Object[max]);
+			columnNames[i - 1] = metaData.getColumnName(i);
+		}
+		
+		int i = 1, columnIndex = 1;
+		
+		while(results.next()) {
+			columnIndex = 1;
+			try {
+				items.add((T)expression.model.newInstance());
+			}
+			catch (IllegalAccessException exception) {
+				System.out.println("Target class with inaccessible protection level. - " + exception);
+				return null;
+			}
+			catch (InstantiationException exception) {
+				System.out.println("Target class with inaccessible protection level. - " + exception);
+				return null;
+			}
+			
+			for (String columnName : columnNames) {
+				Object[] objects = values.get(columnName);
+				Object obj = results.getObject(columnIndex);
+				objects[i - 1] = obj;
+				values.replace(columnName, objects);
+				columnIndex++;
+			}
+			
+			T item = items.get(i - 1);
+			
+			Field[] fields = item.getClass().getFields();
+			
+			for (Field field : fields) {
+				if (values.containsKey(field.getName())) {
+					try {
+						field.set(item, field.getType().cast(values.get(field.getName())[i -1]));
+					}
+					catch (IllegalAccessException exception) {
+						System.out.println("Field with inaccessible protection level. - " + exception);
+						return null;
+					}
+				}
+			}
+			
+			i++;
+		}
+		
+		return items;
+	}
+	
 	public <T extends Table> void insert(T instance) throws SQLException {
 		Field[] fields = instance.getClass().asSubclass(instance.getClass()).getDeclaredFields();
 		String fieldValuesString = "";
@@ -239,6 +305,29 @@ public class DatabaseConnection {
 		statement.executeUpdate();
 	}
 	
+	public <T extends DatabaseObject> void delete(SQLExpression<T> expression) throws SQLException {
+		System.out.println("DELETE FROM " + expression.model.getSimpleName() + " " + (expression.hasWhereCondition ? expression.whereExpression : ""));
+		PreparedStatement statement = this.connection.prepareStatement("DELETE FROM " + expression.wrapClass() + " " + (expression.hasWhereCondition ? expression.whereExpression : ""));
+		statement.executeUpdate();
+		connection.commit();
+	}
+	
+	public <T extends DatabaseObject> void update(T instance, SQLExpression<T> expression) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, SQLException { 
+		String sql = "UPDATE " + expression.wrapClass() + " SET ";
+		int iterations = expression.selectFields.size();
+		
+		for (Field field : expression.selectFields) {
+			sql += SQLExpression.wrapField(field) + " = " + SQLExpression.wrapValue(instance, field);
+			if (--iterations != 0) {
+				sql += ", ";
+			}
+		}
+		sql += " " + expression.whereExpression;
+		
+		System.out.println(sql);
+		connection.prepareStatement(sql).executeUpdate();
+	}
+	
 	public <T extends DatabaseObject> void update(Class<T> T, HashMap<Field, Object> fieldsToUpdate, HashMap<Field, Object> conditions) throws SQLException, IllegalArgumentException, IllegalAccessException {
 		String sqlSetFields = "";
 		int iterations = fieldsToUpdate.size();
@@ -269,9 +358,7 @@ public class DatabaseConnection {
 				sqlWhereExpression += (iterations != 0 ? " AND " : "" ); 
 			}
 		}
-		
-		System.out.println(sqlWhereExpression);
-		
+
 		System.out.println("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
 		
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
