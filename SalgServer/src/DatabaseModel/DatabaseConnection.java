@@ -209,6 +209,7 @@ public class DatabaseConnection {
 		
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.executeUpdate();
+		connection.commit();
 	}
 	
 	public <T extends DatabaseObject> void delete(Class<T> T, HashMap<Field, Object> conditions) throws SQLException {
@@ -234,6 +235,7 @@ public class DatabaseConnection {
 		PreparedStatement statement = this.connection.prepareStatement("DELETE FROM " + T.getSimpleName() + sqlWhereCondition);
 		
 		statement.executeUpdate();
+		connection.commit();
 	}
 	
 	public <T extends DatabaseObject> void delete(SQLExpression<T> expression) throws SQLException {
@@ -257,6 +259,7 @@ public class DatabaseConnection {
 		
 		System.out.println(sql);
 		connection.prepareStatement(sql).executeUpdate();
+		connection.commit();
 	}
 	
 	public <T extends DatabaseObject> void update(Class<T> T, HashMap<Field, Object> fieldsToUpdate, HashMap<Field, Object> conditions) throws SQLException, IllegalArgumentException, IllegalAccessException {
@@ -295,5 +298,6 @@ public class DatabaseConnection {
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
 		
 		statement.executeUpdate();
+		connection.commit();
 	}
 }
