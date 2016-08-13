@@ -12,10 +12,10 @@ public class Server {
 
 	private static ServerSocket MyService; 
 	
-	public static void main(String[] args) {
+	Server() {
 		// TODO Auto-generated method stub
 		try {
-			Server.Run();
+			Run();
 		}
 		catch (IOException exception) {
 			System.out.println(exception);
@@ -36,8 +36,7 @@ public class Server {
 		
     	DatabaseConnection db;
     	ArrayList<Product> products;
-    	
-    	/*Testing serialization and deserialization*/
+
     	try  {
     		db = new DatabaseConnection(true);
     	}
@@ -53,52 +52,17 @@ public class Server {
     		System.out.println("Failed to get products for client - " + exception);
     		return;
     	}
-    	
-    	FileOutputStream stream = new FileOutputStream("tmp/Product.ser"); // WHYYY DO YOU HAVE TO SERIALIZE IN THIS WAY JAVA; WHAT THE FUCK.
-    	
-		ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-		objectStream.writeObject(products);
-		objectStream.close();
-		stream.close();
-		
-		FileInputStream fileInputStream = new FileInputStream("tmp/Product.ser"); // Java serialization still sucks dunkey dick.
-		ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-		
-		try {
-			ArrayList<Product> deserializedProduct = (ArrayList<Product>)objectInputStream.readObject();
-			
-			for (Product product : deserializedProduct) {
-				System.out.print(product);
-			}
-		} 
-		catch (ClassNotFoundException anExceptionThatShouldNeverBeThrown)
-		{
-			System.out.println(anExceptionThatShouldNeverBeThrown);
-			return;
-		}
-		
-		objectInputStream.close();
-		fileInputStream.close();
-		/*Testing ended*/
 		
 		// Next up send the individual OutputFileStream bytes to the client. And parse it there.
-		boolean Running = true;
-	    while(Running = true)
+	    while(true)
 	    {
 		    Socket s=MyService.accept();
-		    System.out.println("Connection Etableret");
 		    
+		    ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+		    oos.writeObject(products);
+		    oos.flush();
+		    oos.close();
 		    
-		    OutputStream obj=s.getOutputStream();
-		    PrintStream ps=new PrintStream(obj);
-		    
-		    String str = "Hej Klient";
-		    
-		    ps.println(str);
-	
-		    ps.println("Bye");
-		    ps.close();
-		    MyService.close();
 		    s.close();
 	    }
 	}
