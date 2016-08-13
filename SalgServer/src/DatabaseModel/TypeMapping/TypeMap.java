@@ -7,8 +7,8 @@ public class TypeMap {
 	public static <T> String mapTypeToJDBC(T T) throws NotImplemented {
 		if (String.class == T)
 			return "VARCHAR";
-		
+
 		throw new NotImplemented();
 	}
-	
+
 }

@@ -14,16 +14,15 @@ public class Table extends DatabaseObject implements Serializable {
 		String serialization = "";
 		this.getClass().asSubclass(this.getClass());
 		Field[] fields = this.getClass().getDeclaredFields();
-		
+
 		for (Field field : fields) {
 			try {
 				serialization += field.getName() + ": " + field.get(this) + "\n";
-			}
-			catch (IllegalAccessException exception) {
+			} catch (IllegalAccessException exception) {
 				System.out.println("WHYY DO YOU HAVE AN INACCESSIBLE FIELD??!?! " + exception);
 			}
 		}
-		
+
 		return serialization;
 	}
 }

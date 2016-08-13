@@ -10,5 +10,6 @@ import java.lang.annotation.RetentionPolicy;
 @Target(FIELD)
 public @interface Precision {
 	int decimals();
+
 	int integers();
 }
