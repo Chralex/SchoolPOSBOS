@@ -182,8 +182,7 @@ public class DatabaseConnection {
 			fieldsString += field.getName();
 			try {
 				if (field.get(instance) != null) {
-					fieldValuesString += (field.getType() != String.class ? field.get(instance)
-							: "\"" + field.get(instance) + "\"");
+					fieldValuesString += wrapValue(instance, field);
 				} else
 					fieldValuesString += "NULL";
 			} catch (IllegalAccessException ex) {
@@ -203,6 +202,34 @@ public class DatabaseConnection {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.executeUpdate();
 		connection.commit();
+	}
+	
+	private static <T extends DatabaseObject> String wrapValue(T T, Field field) throws IllegalArgumentException, IllegalAccessException {
+		Class<?> type = field.getType();
+		String value = "";
+		
+		try {
+			value = field.get(T).toString();
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return value;
+		}
+		
+		if (type == String.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == Date.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == java.util.Date.class) {
+		    return "\"" + new java.sql.Date(((java.util.Date)field.get(T)).getTime()).toString() + "\"";
+		}
+		else if (type == Timestamp.class) {
+			return "\"" + value + "\"";
+		}
+		
+		return value;
 	}
 
 	public <T extends DatabaseObject> void delete(Class<T> T, HashMap<Field, Object> conditions) throws SQLException {
