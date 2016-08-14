@@ -11,5 +11,7 @@ public class User extends Table {
 
 	public String login;
 	public String password;
+	
+	@Nullable
 	public Integer lisenceId;
 }
