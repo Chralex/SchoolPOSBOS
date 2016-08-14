@@ -95,7 +95,7 @@ public class SQLExpression<T extends DatabaseObject> {
 	}
 
 	public String toString() {
-		System.out.println(selectExpression + " " + fromExpression + " " + (hasWhereCondition ? whereExpression : ""));
+		//System.out.println(selectExpression + " " + fromExpression + " " + (hasWhereCondition ? whereExpression : ""));
 		return selectExpression + " " + fromExpression + " " + (hasWhereCondition ? whereExpression : "");
 	}
 	
