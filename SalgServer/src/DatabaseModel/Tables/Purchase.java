@@ -17,4 +17,6 @@ public class Purchase extends Table {
 	public Double price;
 	
 	public Date orderDate;
+	
+	public Integer userId;
 }
