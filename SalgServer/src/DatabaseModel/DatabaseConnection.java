@@ -198,7 +198,7 @@ public class DatabaseConnection {
 
 		String sql = "INSERT INTO " + instance.getClass().getSimpleName() + "(" + fieldsString + ") VALUES("
 				+ fieldValuesString + ")";
-		System.out.println(sql);
+		//System.out.println(sql);
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.executeUpdate();
@@ -224,7 +224,7 @@ public class DatabaseConnection {
 			}
 		}
 
-		System.out.println("DELETE FROM " + T.getSimpleName() + sqlWhereCondition);
+		//System.out.println("DELETE FROM " + T.getSimpleName() + sqlWhereCondition);
 
 		PreparedStatement statement = this.connection
 				.prepareStatement("DELETE FROM " + T.getSimpleName() + sqlWhereCondition);
@@ -234,8 +234,8 @@ public class DatabaseConnection {
 	}
 
 	public <T extends DatabaseObject> void delete(SQLExpression<T> expression) throws SQLException {
-		System.out.println("DELETE FROM " + expression.model.getSimpleName() + " "
-				+ (expression.hasWhereCondition ? expression.whereExpression : ""));
+//		System.out.println("DELETE FROM " + expression.model.getSimpleName() + " "
+//				+ (expression.hasWhereCondition ? expression.whereExpression : ""));
 		PreparedStatement statement = this.connection.prepareStatement("DELETE FROM " + expression.wrapClass() + " "
 				+ (expression.hasWhereCondition ? expression.whereExpression : ""));
 		statement.executeUpdate();
@@ -255,7 +255,7 @@ public class DatabaseConnection {
 		}
 		sql += " " + expression.whereExpression;
 
-		System.out.println(sql);
+		//System.out.println(sql);
 		connection.prepareStatement(sql).executeUpdate();
 		connection.commit();
 	}
@@ -274,7 +274,7 @@ public class DatabaseConnection {
 			sqlSetFields += (iterations != 0 ? "," : "");
 		}
 
-		System.out.println(sqlSetFields);
+		//System.out.println(sqlSetFields);
 
 		String sqlWhereExpression = "";
 
@@ -294,12 +294,22 @@ public class DatabaseConnection {
 			}
 		}
 
-		System.out.println("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
+		//System.out.println("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
 
 		PreparedStatement statement = this.connection
 				.prepareStatement("UPDATE " + T.getSimpleName() + " SET " + sqlSetFields + sqlWhereExpression);
 
 		statement.executeUpdate();
 		connection.commit();
+	}
+	
+	public <T extends DatabaseObject> boolean exists(SQLExpression<T> expression) throws SQLException {
+		ResultSet results = connection.createStatement().executeQuery("SELECT 1 as `BooleanColumn` FROM " + expression.wrapClass() + " " + expression.whereExpression);
+		
+		results.next();
+		if (results.getMetaData().getColumnCount() > 0 && results.getInt(1) == 1)
+			return true;
+		
+		return false;
 	}
 }
