@@ -1,6 +1,8 @@
 package DatabaseModel.SQLExpressions;
 
 import java.lang.reflect.Field;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import DatabaseModel.DatabaseObject;
@@ -88,6 +90,21 @@ public class SQLExpression<T extends DatabaseObject> {
 		}
 		
 		if (type == String.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == Date.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == java.util.Date.class) {
+		    try {
+				return "\"" + new java.sql.Date(((java.util.Date)field.get(T)).getTime()).toString() + "\"";
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (type == Timestamp.class) {
 			return "\"" + value + "\"";
 		}
 		
