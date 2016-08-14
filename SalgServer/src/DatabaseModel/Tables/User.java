@@ -3,6 +3,9 @@ package DatabaseModel.Tables;
 import DatabaseModel.Table;
 import DatabaseModel.Annotations.*;
 
+/**
+ * User definition.
+ */
 public class User extends Table {
 
 	@PrimaryKey

@@ -14,15 +14,23 @@ public class SQLExpression<T extends DatabaseObject> {
 	public String fromExpression = "FROM ";
 	public String selectExpression = "SELECT *";
 	public String whereExpression = "WHERE ";
-	public Class<T> model;
+	public Class<T> databaseObject;
 	public ArrayList<Field> selectFields = new ArrayList<Field>(); 
 	
-	
-	public SQLExpression(Class<T> model) {
-		this.model = model;
-		fromExpression += wrapClass(model);
+	/**
+	 * Create an SQLExpression that targets a DatabaseObject class.
+	 * @param databaseObject - The 
+	 */
+	public SQLExpression(Class<T> databaseObject) {
+		this.databaseObject = databaseObject;
+		fromExpression += wrapClass(databaseObject);
 	}
 
+	/**
+	 * Create a custom select expression by providing fields.
+	 * @param fields - The fields to select.
+	 * @return the same SQLExpression used for chaining. 
+	 */
 	public SQLExpression<T> select(Field[] fields) {
 		selectExpression = "SELECT ";
 		int iterations = fields.length;
@@ -38,6 +46,12 @@ public class SQLExpression<T extends DatabaseObject> {
 		return this;
 	}
 	
+	/**
+	 * Create or append a custom where expression by providing fields and an instance of a type containing the field values.
+	 * @param T - Instance of a type that contains the field values.
+	 * @param fields - The target fields that will be appended in the where expression, values are contained in the type instance.
+	 * @return the same SQLExpression used for chaining.
+	 */
 	public SQLExpression<T> where (T T, Field[] fields) {
 		for (Field field : fields) { 
 			whereExpression +=  (hasWhereCondition == true ? " AND " : "") + wrapField(field) + " = " + wrapValue(T, field);
@@ -47,6 +61,12 @@ public class SQLExpression<T extends DatabaseObject> {
 		return this;
 	}
 	
+	/**
+	 * Append to a custom where expression with an OR statement.
+	 * @param T - Instance of a type that contains the field values.
+	 * @param fields - The target fields that will be appended in the where expression, values are contained in the type instance.
+	 * @return the same SQLExpression used for chaining.
+	 */
 	public SQLExpression<T> or (T T, Field[] fields) {
 		for (Field field : fields) { 
 			whereExpression += (hasWhereCondition == true ? " OR " : "") + wrapField(field) + " = " + wrapValue(T, field);
@@ -56,6 +76,12 @@ public class SQLExpression<T extends DatabaseObject> {
 		return this;
 	}
 	
+	/**
+	 * Append to a custom where expression with an AND statement.
+	 * @param T - Instance of a type that contains the field values.
+	 * @param fields - The target fields that will be appended in the where expression, values are contained in the type instance.
+	 * @return the same SQLExpression used for chaining.
+	 */
 	public SQLExpression<T> and (T T, Field[] fields) {
 		for (Field field : fields) { 
 			whereExpression += (hasWhereCondition == true ? " AND " : "") + wrapField(field) + " = " + wrapValue(T, field);
@@ -65,18 +91,38 @@ public class SQLExpression<T extends DatabaseObject> {
 		return this;
 	}
 	
+	/**
+	 * Used for SQL-field parameterization.
+	 * @param field
+	 * @return Parameterized SQL-column name.
+	 */
 	public static String wrapField(Field field) {
 		return "`" + field.getName() + "`";
 	}
 	
+	/**
+	 * Used for SQL-DatabaseObject parameterization.
+	 * @param definition
+	 * @return Parameterized SQL-DatabaseObject name.
+	 */
 	private static String wrapClass(Class<?> definition) {
 		return "`" + definition.getSimpleName() + "`";
 	}
 	
+	/**
+	 * Used for SQL-DatabaseObject parameterization.
+	 * @return Parameterized SQL-DatabaseObject name.
+	 */
 	public String wrapClass() {
-		return "`" + model.getSimpleName() + "`";
+		return "`" + databaseObject.getSimpleName() + "`";
 	}
 	
+	/**
+	 * Parameterize a field value before using it in a query.
+	 * @param T - The instance that contains the field with the value to parameterize.
+	 * @param field - The field that contains the value to parameterize.
+	 * @return Parameterized SQL-value.
+	 */
 	public static <T extends DatabaseObject> String wrapValue(T T, Field field) {
 		Class<?> type = field.getType();
 		String value = "";
@@ -111,6 +157,10 @@ public class SQLExpression<T extends DatabaseObject> {
 		return value;
 	}
 
+	/**
+	 * This may be used to execute functional SQL statements. Ideal for select statements or used in sub-queries or custom inner joins or UNIONS.
+	 * @return An SQL statement.
+	 */
 	public String toString() {
 		//System.out.println(selectExpression + " " + fromExpression + " " + (hasWhereCondition ? whereExpression : ""));
 		return selectExpression + " " + fromExpression + " " + (hasWhereCondition ? whereExpression : "");

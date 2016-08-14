@@ -9,6 +9,11 @@ public class DatabaseInitializer {
 
 	private DatabaseModel model;
 
+	/**
+	 * Create a new DatabaseInitializer with a model definition.
+	 * @param DatabaseModel model - The model used for database initialization once the InitalizeDatabase method is run. 
+	 * Also used in the IncompleteModel and CleanupDatabase methods.
+	 */
 	public DatabaseInitializer(DatabaseModel model) {
 		this.model = model;
 	}

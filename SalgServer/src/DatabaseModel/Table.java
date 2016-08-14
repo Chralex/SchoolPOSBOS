@@ -14,10 +14,10 @@ import com.mysql.jdbc.NotImplemented;
 
 public class Table extends DatabaseObject implements Serializable {
 
-	/**
-	 * 
-	 */
-	private transient  static final long serialVersionUID = 1L;
+	// This is used to determine if the client and the server is running the same version of the database model.
+	// Not used at the moment but an interesting concept to explore.
+	private transient static final long serialVersionUID = 1L;
+	
 	public transient String type = "TABLE";
 	
 	// Reflection magic.
@@ -38,6 +38,11 @@ public class Table extends DatabaseObject implements Serializable {
 		return serialization;
 	}
 	
+	/**
+	 * Drop a table in the database.
+	 * @param db - The target database connection.
+	 * @throws SQLException
+	 */
 	public void Drop(DatabaseConnection db) throws SQLException {
 		System.out.println("DROP TABLE " + this.getClass().asSubclass(this.getClass()).getSimpleName());
 		PreparedStatement statement = db.connection.prepareStatement("DROP TABLE " + this.getClass().asSubclass(this.getClass()).getSimpleName());
@@ -45,6 +50,11 @@ public class Table extends DatabaseObject implements Serializable {
 		db.connection.commit();
 	}
 	
+	/**
+	 * Creates the class as a table in the database.
+	 * @param db - The target database connection.
+	 * @throws SQLException
+	 */
 	public void Create(DatabaseConnection db) throws SQLException {
 		String sql = "CREATE TABLE " + this.getClass().getSimpleName() + "(";
 		

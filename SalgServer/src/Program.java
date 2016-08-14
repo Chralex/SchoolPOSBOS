@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Authentication.*;
 import DatabaseModel.*;
 import DatabaseModel.DatabaseInitializer.FieldNotInitializedException;
 import DatabaseModel.Tables.*;
@@ -15,6 +16,16 @@ public class Program {
 		System.out.println("===INITIALIZING====");
 		InitializationChecks();
 		System.out.println("===FINALIZED===");
+	
+		// Test login.
+		try {
+			String authToken = AuthenticationService.login("test", "test");
+			System.out.println("Auth token for user Test: " + authToken);
+		}
+		catch (SQLException exception) {
+			// There's an error in the SQL statement. What are we doing?
+			exception.printStackTrace();
+		}
 		
 		new Server();
 	}
@@ -39,9 +50,14 @@ public class Program {
 			pur1.orderNumber = "hejtest";
 			pur1.price = 105.10d;
 			
+			User u1 = new User();
+			u1.password = "test";
+			u1.login = "test";
+			
 			tableData.add(p1);
 			tableData.add(pur1);
-
+			tableData.add(u1);
+			
 			DatabaseModel model = new DatabaseModel(tables, tableData);
 
 			try {

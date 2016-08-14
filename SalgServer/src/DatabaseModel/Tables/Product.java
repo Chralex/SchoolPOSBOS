@@ -3,6 +3,9 @@ package DatabaseModel.Tables;
 import DatabaseModel.Table;
 import DatabaseModel.Annotations.*;
 
+/**
+ * Product definition.
+ */
 public class Product extends Table {
 	
 	@PrimaryKey
