@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import DatabaseModel.Tables.Product;
 
