@@ -1,6 +1,8 @@
 import java.sql.*;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import DatabaseModel.*;
 import DatabaseModel.DatabaseInitializer.FieldNotInitializedException;
 import DatabaseModel.Tables.*;
@@ -13,7 +15,7 @@ public class Program {
 		System.out.println("===INITIALIZING====");
 		InitializationChecks();
 		System.out.println("===FINALIZED===");
-
+		
 		new Server();
 	}
 
@@ -32,7 +34,13 @@ public class Program {
 			p1.name = "Kopimaskine";
 			p1.price = 100.5d;
 
+			Purchase pur1 = new Purchase();
+			pur1.orderDate = new Date();
+			pur1.orderNumber = "hejtest";
+			pur1.price = 105.10d;
+			
 			tableData.add(p1);
+			tableData.add(pur1);
 
 			DatabaseModel model = new DatabaseModel(tables, tableData);
 
