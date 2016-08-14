@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import DatabaseModel.DatabaseConnection;
 import DatabaseModel.SQLExpressions.SQLExpression;
-import DatabaseModel.Tables.Product;
 import DatabaseModel.Tables.User;
 
 public class Login {
