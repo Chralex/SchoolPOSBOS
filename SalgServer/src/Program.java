@@ -2,8 +2,6 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
-
 import Authentication.*;
 import DatabaseModel.*;
 import DatabaseModel.DatabaseInitializer.FieldNotInitializedException;
