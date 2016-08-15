@@ -53,7 +53,7 @@ public class Server {
 
 		DatabaseConnection db = new DatabaseConnection();
 		ArrayList<Product> products = new ArrayList<Product>();
-
+		db.closeConnection();
 		/*
 		try {
 			db = new DatabaseConnection();
@@ -99,10 +99,11 @@ public class Server {
 
 				try {
 					products = db.select(Product.class);
-					
+					db.closeConnection();
 					
 				} catch (SQLException exception) {
 					System.out.println("Failed to get products for client - " + exception);
+					db.closeConnection();
 					return;
 				}
 			}
@@ -146,6 +147,7 @@ public class Server {
 					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
+					db.closeConnection();
 					e.printStackTrace();
 				}
 				
@@ -165,6 +167,7 @@ public class Server {
 					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
+					db.closeConnection();
 					e.printStackTrace();
 				}
 
@@ -182,6 +185,7 @@ public class Server {
 				e.printStackTrace();
 			}
 			*/
+			
 			s.close();
 		}
 	}

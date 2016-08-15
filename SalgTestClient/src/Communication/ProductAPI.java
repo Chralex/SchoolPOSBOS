@@ -56,8 +56,11 @@ public class ProductAPI {
 		if (socket.isConnected())
 		{		    
 		pw.println("sendsales");
-		socket.close();
+		pw.flush();
+		
 		}
+		pw.close();
+		socket.close();
 		return "sendsales";
 	}
 	
@@ -83,9 +86,10 @@ public class ProductAPI {
 		if (socket.isConnected())
 		{		    
 		pw.println("sendpurchase");
-		socket.close();
+		pw.flush();
 		}
-		
+		pw.close();
+		socket.close();
 		return "sendpurchase";
 	}
 	
