@@ -2,6 +2,7 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 import Authentication.*;
 import DatabaseModel.*;
@@ -40,22 +41,65 @@ public class Program {
 			tables.add(new Sale());
 			tables.add(new User());
 
+			ArrayList<Product> products = new ArrayList<Product>();
 			ArrayList<Table> tableData = new ArrayList<Table>();
+			
 			Product p1 = new Product();
-			p1.name = "Kopimaskine";
-			p1.price = 100.5d;
-
-			Purchase pur1 = new Purchase();
-			pur1.orderDate = new Date();
-			pur1.orderNumber = "hejtest";
-			pur1.price = 105.10d;
+			p1.name = "IP Phone";
+			p1.price = 250.5d;
+			p1.id = 1;
+			Product p2 = new Product();
+			p2.name = "HD Screen";
+			p2.price = 1000.5d;
+			p2.id = 2;
+			Product p3 = new Product();
+			p3.name = "Printer";
+			p3.price = 100.5d;
+			p3.id = 3;
+			Product p4 = new Product();
+			p4.name = "Desktop PC";
+			p4.price = 3500d;
+			p4.id = 4;
+			Product p5 = new Product();
+			p5.name = "Cisco Catalyst 2960";
+			p5.price = 5000d;
+			p5.id = 5;
+			products.add(p1);
+			products.add(p2);
+			products.add(p3);
+			products.add(p4);
+			products.add(p5);
+			
+			int purhcases = (int)(Math.random() * 100);
+			
+			for (int i = purhcases; i != 0; i--) {
+				int sales = (int)(Math.random() * 10);
+				Purchase purchase = new Purchase();
+				purchase.orderNumber = "ORDER" + i;
+				purchase.orderDate = new Date();
+				purchase.price = 0d;
+				purchase.userId = 1;	// The userid of the initial system user.
+				if (sales > 0) {
+					for (int iterations = sales; iterations != 0; iterations--) {
+						Sale sale = new Sale();
+						Product randomProduct = products.get((int)(Math.random()*(products.size() - 1)));
+						
+						purchase.price += randomProduct.price;
+						sale.productId = randomProduct.id;
+						sale.orderNumber = purchase.orderNumber;
+						sale.price = randomProduct.price;
+						
+						tableData.add(sale);
+					}
+					tableData.add(purchase);
+				}
+			}
 			
 			User u1 = new User();
 			u1.password = "test";
 			u1.login = "test";
 			
-			tableData.add(p1);
-			tableData.add(pur1);
+			tableData.addAll(products);
 			tableData.add(u1);
 			
 			DatabaseModel model = new DatabaseModel(tables, tableData);
