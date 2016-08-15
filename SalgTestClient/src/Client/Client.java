@@ -1,8 +1,10 @@
+package Client;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Communication.ProductAPI;
 import DatabaseModel.Tables.Product;
 
 public class Client {
@@ -11,9 +13,16 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		Socket socket = new Socket("Localhost", PortNumber);
+	
+		
+		ArrayList<Product> productTest = Communication.ProductAPI.getProducts();
+		for (Product p : productTest) {
+			System.out.println(p);
+		}
+		
+		//Socket socket = new Socket("Localhost", PortNumber);
 
-		PrintWriter pw;
+		//PrintWriter pw;
 		
 		Scanner scan = new Scanner(System.in);
 		
@@ -21,11 +30,35 @@ public class Client {
 		String input = scan.next();
 		scan.close();
 		
+		if (input.toLowerCase().trim().equals("a"))
+		{
+			System.out.println("product");
+			/*ArrayList<Product>*/ productTest = Communication.ProductAPI.getProducts();
+			for (Product p : productTest) {
+				System.out.println(p);
+			}
+		}
+		else if (input.toLowerCase().trim().equals("b"))
+		{
+			System.out.println("sale");
+			
+			
+			
+			ProductAPI.sendSales();
+		}		
+		else if (input.toLowerCase().trim().equals("c"))
+		{
+			System.out.println("purchase");
+			ProductAPI.sendPurchase();
+		}		
+		else
+		{
+		System.out.println("else");
+		}
+		
+		/*
 		if (input.toLowerCase().trim().equals("getproducts") && socket.isConnected())
 		{
-			
-			
-			
 		//if (socket.isConnected()) {
 			
 		    pw = new PrintWriter(socket.getOutputStream(), true);
@@ -36,15 +69,17 @@ public class Client {
 			System.out.println(products);
 			//System.out.println(products.get(0).name);   // products.size();
 			ois.close();
-		//}
+
 		}
+		/*
 		else if (input.toLowerCase().trim().equals("sendsales") && socket.isConnected())
 		{
+		pw = new PrintWriter(socket.getOutputStream(), true);
 		    pw = new PrintWriter(socket.getOutputStream(), true);
 		    pw.println(input);
 		}
 		else if (input.toLowerCase().trim().equals("sendpurchase") && socket.isConnected())
-		{
+		{pw = new PrintWriter(socket.getOutputStream(), true);
 			 pw = new PrintWriter(socket.getOutputStream(), true);
 			 pw.println(input);
 		}
@@ -52,7 +87,8 @@ public class Client {
 			
 			
 		}
-		socket.close();
+		*/
+		//socket.close();
 	}
 
 }
