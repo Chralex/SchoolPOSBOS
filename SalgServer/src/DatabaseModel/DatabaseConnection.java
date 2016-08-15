@@ -142,6 +142,7 @@ public class DatabaseConnection {
 	public <T extends DatabaseObject> List<T> select(SQLExpression<T> expression) throws SQLException {
 		List<T> items = new ArrayList<T>();
 
+		
 		ResultSet results = connection.prepareStatement(expression.toString()).executeQuery();
 
 		ResultSetMetaData metaData = results.getMetaData();
