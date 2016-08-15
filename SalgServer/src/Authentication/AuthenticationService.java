@@ -40,15 +40,18 @@ public class AuthenticationService {
 		}
 		catch (NoSuchFieldException exception) {
 			exception.printStackTrace();
+			db.closeConnection();
 			return "";
 		}
 		
 		if (db.exists(filterExpression)) {
 			String randomToken = UUID.randomUUID().toString();
 			authenticationMap.put(db.select(filterExpression).get(0).id, randomToken);
+			db.closeConnection();
 			return randomToken;
 		}
 		
+		db.closeConnection();
 		return "";
 	}
 	

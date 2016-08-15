@@ -85,7 +85,13 @@ public class Program {
 			}
 			connection.closeConnection();
 		} catch (SQLException e) {
-			System.out.println(e);
+			try {
+				connection.closeConnection();
+			}
+			catch (SQLException exception) {
+				exception.printStackTrace();
+			}
+			e.printStackTrace();
 		}
 	}
 
