@@ -30,7 +30,7 @@ public class Client {
 		String input = scan.next();
 		scan.close();
 		
-		if (input.toLowerCase().trim().equals("aee"))
+		if (input.toLowerCase().trim().equals("a"))
 		{
 			System.out.println("product");
 			/*ArrayList<Product>*/ productTest = Communication.ProductAPI.getProducts();
@@ -38,12 +38,15 @@ public class Client {
 				System.out.println(p);
 			}
 		}
-		else if (input.toLowerCase().trim().equals("bee"))
+		else if (input.toLowerCase().trim().equals("b"))
 		{
 			System.out.println("sale");
+			
+			
+			
 			ProductAPI.sendSales();
 		}		
-		else if (input.toLowerCase().trim().equals("cee"))
+		else if (input.toLowerCase().trim().equals("c"))
 		{
 			System.out.println("purchase");
 			ProductAPI.sendPurchase();
