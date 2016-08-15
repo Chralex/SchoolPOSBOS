@@ -19,7 +19,12 @@ public class Server {
 	Server() {
 		// TODO Auto-generated method stub
 		try {
-			Run();
+			try {
+				Run();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException exception) {
 			System.out.println(exception);
 			if (myService != null && myService.isClosed() == false) {
@@ -32,7 +37,7 @@ public class Server {
 		}
 	}
 
-	public void Run() throws IOException {
+	public void Run() throws IOException, SQLException {
 		Date date;
 		SimpleDateFormat sdf;
 		String formattedDate;
@@ -46,9 +51,10 @@ public class Server {
 
 
 
-		DatabaseConnection db;
-		ArrayList<Product> products;
+		DatabaseConnection db = new DatabaseConnection();
+		ArrayList<Product> products = new ArrayList<Product>();
 
+		/*
 		try {
 			db = new DatabaseConnection();
 		} catch (SQLException exception) {
@@ -62,7 +68,10 @@ public class Server {
 			System.out.println("Failed to get products for client - " + exception);
 			return;
 		}
-
+		 */
+		
+		
+		
 		// Next up send the individual OutputFileStream bytes to the client. And
 		// parse it there.
 		while (true) {
@@ -77,33 +86,51 @@ public class Server {
 
 			
 			
+			if (s.isConnected())
+			{
+
+
+				try {
+					db = new DatabaseConnection();
+				} catch (SQLException exception) {
+					System.out.println("Failed to connect to database - " + exception);
+					return;
+				}
+
+				try {
+					products = db.select(Product.class);
+					
+					
+				} catch (SQLException exception) {
+					System.out.println("Failed to get products for client - " + exception);
+					return;
+				}
+			}
 			
 			 inp = s.getInputStream();
 		    
 		     br = new BufferedReader(new InputStreamReader(inp));			
 			
-			    String str1 = br.readLine();
+		    String str1 = br.readLine();
 
-			    if (str1 == null)
-			    {
-			    str1 = "Not legal command";
-			    System.out.println(formattedDate + " From Klient: " + str1);
-			    }
-			    else
-			    {
-			    System.out.println(formattedDate + " From Klient: " + str1);
-			    }
+		    if (str1 == null)
+		    {
+		    str1 = "Not legal command";
+		    System.out.println(formattedDate + " From Klient: " + str1);
+		    }
+		    else
+		    {
+		    System.out.println(formattedDate + " From Klient: " + str1);
+		    }
 
 			if (str1.toLowerCase().trim().equals("getproducts"))
 			{
-				
-				
-				  
-				  
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(products);
 			oos.flush();
 			oos.close();
+			
+			db.closeConnection();
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
@@ -114,6 +141,9 @@ public class Server {
 					saleInsert.productId = 5;
 					saleInsert.price = 120.3d;
 					db.insert(saleInsert);
+					
+					db.closeConnection();
+					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -128,8 +158,11 @@ public class Server {
 					Purchase purchaseInsert = new Purchase();
 					purchaseInsert.orderNumber = "TestPurchase";
 					purchaseInsert.price = 25.33d;
-					//purchaseInsert.orderDate = date;
+					purchaseInsert.orderDate = date;
 					db.insert(purchaseInsert);
+					
+					db.closeConnection();
+					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -140,6 +173,13 @@ public class Server {
 			}
 			else {
 
+			}
+			
+			try {
+				db.closeConnection();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			s.close();
 		}
