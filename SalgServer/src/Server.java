@@ -131,7 +131,7 @@ public class Server {
 			oos.flush();
 			oos.close();
 			
-			db.closeConnection();
+
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
