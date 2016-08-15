@@ -50,7 +50,10 @@ public class ProductAPI {
 		
 		socket.close();
 		*/
-		
+		ArrayList<Object> saleArr = new ArrayList<Object>();
+		  
+		  
+		  
 		Socket socket = new Socket("Localhost", Client.Client.PortNumber);
 		PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 		

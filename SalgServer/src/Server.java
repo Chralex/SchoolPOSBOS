@@ -162,21 +162,13 @@ public class Server {
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
-				try {
-					db = new DatabaseConnection();
-					Sale saleInsert = new Sale();
-					saleInsert.orderNumber = "TestSale";
-					saleInsert.productId = 5;
-					saleInsert.price = 120.3d;
-					db.insert(saleInsert);
-					
-					db.closeConnection();
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					db.closeConnection();
-					e.printStackTrace();
-				}
+				Sale saleInsert = new Sale();
+				saleInsert.productId = 1;
+				
+				API.SalesAPI.processSales(new Sale[] {
+					saleInsert,
+					saleInsert
+				});
 				
 				System.out.println(formattedDate + " Sales updated by Klient");
 			}
