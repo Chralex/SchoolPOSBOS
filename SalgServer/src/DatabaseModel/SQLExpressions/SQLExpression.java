@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import DatabaseModel.DatabaseObject;
+import DatabaseModel.Table;
 
 public class SQLExpression<T extends DatabaseObject> {
 	
@@ -91,6 +93,53 @@ public class SQLExpression<T extends DatabaseObject> {
 		return this;
 	}
 	
+	public <V extends Table> SQLExpression<T> in (V[] values, Field[] fields)
+	{
+		HashMap<String, ArrayList<Object>> fieldValues = new HashMap<String, ArrayList<Object>>();
+		
+		for (V value : values) {
+			for (Field field : fields) {
+				try {
+					if (fieldValues.containsKey(field.getName()) == false) {
+						ArrayList<Object> objValues = new ArrayList<Object>();
+						Object instanceValue = value.getClass().getField(field.getName()).get(value);
+						if (instanceValue != null) {
+							objValues.add(instanceValue);
+							fieldValues.put(field.getName(), objValues);
+						}
+					}
+					else {
+						Object instanceValue = value.getClass().getField(field.getName()).get(value);
+						if (instanceValue != null)
+							fieldValues.get(field.getName()).add(instanceValue);
+					}
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+						| SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+		
+
+		for (String field : fieldValues.keySet()) {
+			this.whereExpression += (this.hasWhereCondition ? " AND " : "") + "`" + field + "` IN ( ";
+			ArrayList<Object> valueObjects = fieldValues.get(field);
+			int iterations = valueObjects.size(); 
+			for (Object object : valueObjects) {
+				this.whereExpression += wrapValue(object);
+
+				if (--iterations != 0)
+					this.whereExpression += ",";
+				else
+					this.whereExpression += ")";
+			}
+			this.hasWhereCondition = true;
+		}
+
+		return this; // Chaining.
+	}
 	/**
 	 * Used for SQL-field parameterization.
 	 * @param field
@@ -158,6 +207,44 @@ public class SQLExpression<T extends DatabaseObject> {
 	}
 
 	/**
+	 * Parameterize a field value before using it in a query.
+	 * @param Object object - The value to parameterize.
+	 * @return Parameterized SQL-value.
+	 */
+	public static <T extends DatabaseObject> String wrapValue(Object object) {
+		Class<?> type = object.getClass();
+		String value = "";
+		
+		try {
+			value = object.toString();
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return value;
+		}
+		
+		if (type == String.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == Date.class) {
+			return "\"" + value + "\"";
+		}
+		else if (type == java.util.Date.class) {
+		    try {
+				return "\"" + new java.sql.Date(((java.util.Date)object).getTime()).toString() + "\"";
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (type == Timestamp.class) {
+			return "\"" + value + "\"";
+		}
+		
+		return value;
+	}
+
+	
+	/**
 	 * This may be used to execute functional SQL statements. Ideal for select statements or used in sub-queries or custom inner joins or UNIONS.
 	 * @return An SQL statement.
 	 */
@@ -167,3 +254,4 @@ public class SQLExpression<T extends DatabaseObject> {
 	}
 	
 }
+
