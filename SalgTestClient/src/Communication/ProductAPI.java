@@ -36,7 +36,7 @@ public class ProductAPI {
 		return products;
 	}
 	
-	public static String sendSales() throws UnknownHostException, IOException, ClassNotFoundException
+	public static String sendSales(int[] array) throws UnknownHostException, IOException, ClassNotFoundException
 	{
 		/*Socket socket = new Socket("Localhost", Client.Client.PortNumber);
 		ArrayList<Product> sales = new ArrayList<Product>();
@@ -50,25 +50,37 @@ public class ProductAPI {
 		
 		socket.close();
 		*/
-		ArrayList<Object> saleArr = new ArrayList<Object>();
+		
 		  
 		  
 		  
 		Socket socket = new Socket("Localhost", Client.Client.PortNumber);
-		PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 		
+		//PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+		  ObjectOutputStream write = new ObjectOutputStream(socket.getOutputStream());
 		if (socket.isConnected())
 		{		    
-		pw.println("sendsales");
-		pw.flush();
+			write.writeUTF("sendsales");
+			write.flush();
+			
+			
+			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject(array);
+			oos.flush();
+			oos.close();
+		//pw.println("sendsales");
+		//pw.flush();
 		
 		}
-		pw.close();
+		//pw.close();
+		
+		write.close();
+		
 		socket.close();
 		return "sendsales";
 	}
 	
-	public static String sendPurchase() throws UnknownHostException, IOException, ClassNotFoundException
+	/*public static String sendPurchase() throws UnknownHostException, IOException, ClassNotFoundException
 	{
 		/*
 		Socket socket = new Socket("Localhost", Client.Client.PortNumber);
@@ -81,7 +93,7 @@ public class ProductAPI {
 		oos.close();
 		
 		socket.close();
-		*/
+		*//*
 		
 		
 		Socket socket = new Socket("Localhost", Client.Client.PortNumber);
@@ -95,7 +107,7 @@ public class ProductAPI {
 		pw.close();
 		socket.close();
 		return "sendpurchase";
-	}
+	}*/
 	
 	
 }

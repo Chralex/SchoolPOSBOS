@@ -162,16 +162,28 @@ public class Server {
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
-				Sale saleInsert = new Sale();
-				saleInsert.productId = 1;
+				int[] soldProducts = new int[0];
+	
+				ObjectInputStream oos = new ObjectInputStream(s.getInputStream());
+				try {
+					soldProducts = (int[])oos.readObject();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				oos.close();
 				
-				API.SalesAPI.processSales(new Sale[] {
-					saleInsert,
-					saleInsert
-				});
+				Sale[] sales = new Sale[soldProducts.length];
+				
+				for (int i = soldProducts.length - 1; i >= 0; i--) {
+					sales[i] = new Sale();
+					sales[i].productId = soldProducts[i];
+				}
+				
+				API.SalesAPI.processSales(sales);
 				
 				System.out.println(formattedDate + " Sales updated by Klient");
-			}
+			}/*
 			else if (str1.toLowerCase().trim().equals("sendpurchase")) //??
 			{
 				try {
@@ -192,7 +204,7 @@ public class Server {
 
 				
 				System.out.println(formattedDate + " Purchases updated by Klient");
-			}
+			}*/
 			else {
 
 			}
