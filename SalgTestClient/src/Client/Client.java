@@ -31,7 +31,7 @@ public class Client {
 		String input = scan.next();
 		scan.close();
 		
-		if (input.toLowerCase().trim().equals("a"))
+		if (input.toLowerCase().trim().equals("getproducts"))
 		{
 			System.out.println("product");
 			/*ArrayList<Product>*/ productTest = Communication.ProductAPI.getProducts();
@@ -39,19 +39,23 @@ public class Client {
 				System.out.println(p);
 			}
 		}
-		else if (input.toLowerCase().trim().equals("b"))
+		else if (input.toLowerCase().trim().equals("sendsales"))
 		{
-			System.out.println("sale");
+			
+			
+			int saleInput[]={1,2,3};
+			System.out.println("sale sent");
 			
 			
 			
-			ProductAPI.sendSales();
+			ProductAPI.sendSales(saleInput);
 		}		
+		/*
 		else if (input.toLowerCase().trim().equals("c"))
 		{
 			System.out.println("purchase");
 			ProductAPI.sendPurchase();
-		}		
+		}	*/	
 		else
 		{
 		System.out.println("else");

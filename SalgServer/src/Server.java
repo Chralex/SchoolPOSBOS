@@ -162,24 +162,28 @@ public class Server {
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
+				int[] soldProducts = new int[0];
+	
+				ObjectInputStream oos = new ObjectInputStream(s.getInputStream());
 				try {
-					db = new DatabaseConnection();
-					Sale saleInsert = new Sale();
-					saleInsert.orderNumber = "TestSale";
-					saleInsert.productId = 5;
-					saleInsert.price = 120.3d;
-					db.insert(saleInsert);
-					
-					db.closeConnection();
-					
-				} catch (SQLException e) {
+					soldProducts = (int[])oos.readObject();
+				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
-					db.closeConnection();
 					e.printStackTrace();
 				}
+				oos.close();
+				
+				Sale[] sales = new Sale[soldProducts.length];
+				
+				for (int i = soldProducts.length - 1; i >= 0; i--) {
+					sales[i] = new Sale();
+					sales[i].productId = soldProducts[i];
+				}
+				
+				API.SalesAPI.processSales(sales);
 				
 				System.out.println(formattedDate + " Sales updated by Klient");
-			}
+			}/*
 			else if (str1.toLowerCase().trim().equals("sendpurchase")) //??
 			{
 				try {
@@ -200,7 +204,7 @@ public class Server {
 
 				
 				System.out.println(formattedDate + " Purchases updated by Klient");
-			}
+			}*/
 			else {
 
 			}
