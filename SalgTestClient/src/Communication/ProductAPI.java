@@ -21,8 +21,9 @@ public class ProductAPI {
 
 		if (socket.isConnected())
 		{		    
-			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-			pw.println("getproducts");
+			ObjectOutputStream pw = new ObjectOutputStream(socket.getOutputStream());
+			pw.writeUTF("getproducts");
+			pw.flush();
 			
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			products = (ArrayList<Product>) ois.readObject();

@@ -6,14 +6,15 @@ import java.util.Scanner;
 
 import Communication.ProductAPI;
 import DatabaseModel.Tables.Product;
+import UI.AuthenticationScreen;
 
 public class Client {
 
 	public static int PortNumber = 2035;
 
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-	
+		 
+		new AuthenticationScreen();
 		
 		ArrayList<Product> productTest = Communication.ProductAPI.getProducts();
 		for (Product p : productTest) {

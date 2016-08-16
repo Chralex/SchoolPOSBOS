@@ -16,6 +16,7 @@ public class AuthenticationService {
 	 * The key is the user's UserId. See User.id;
 	 */
 	public static HashMap<Integer, String> authenticationMap = new HashMap<Integer, String>();
+	public static HashMap<String, Integer> reverseAuth = new HashMap<String, Integer>();
 	
 	/**
 	 * 
@@ -26,6 +27,9 @@ public class AuthenticationService {
 	 * @throws SQLException
 	 */
 	public static String login(String login, String password) throws SecurityException, SQLException  {
+		if (login.equals("") || password.equals(""))
+			return "";
+		
 		DatabaseConnection db = new DatabaseConnection();
 		User filterUser = new User();
 		filterUser.login = login;
@@ -46,7 +50,9 @@ public class AuthenticationService {
 		
 		if (db.exists(filterExpression)) {
 			String randomToken = UUID.randomUUID().toString();
+			int id = db.select(filterExpression).get(0).id;
 			authenticationMap.put(db.select(filterExpression).get(0).id, randomToken);
+			reverseAuth.put(randomToken, id);
 			db.closeConnection();
 			return randomToken;
 		}

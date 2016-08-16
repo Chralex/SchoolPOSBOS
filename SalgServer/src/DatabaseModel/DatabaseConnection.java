@@ -411,8 +411,7 @@ public class DatabaseConnection {
 	public <T extends DatabaseObject> boolean exists(SQLExpression<T> expression) throws SQLException {
 		ResultSet results = connection.createStatement().executeQuery("SELECT 1 as `BooleanColumn` FROM " + expression.wrapClass() + " " + expression.whereExpression + " LIMIT 1");
 		
-		results.next();
-		if (results.getMetaData().getColumnCount() > 0 && results.getInt(1) == 1)
+		if (results.next() && results.getMetaData().getColumnCount() > 0 && results.getInt(1) == 1)
 			return true;
 		
 		return false;

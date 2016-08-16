@@ -9,6 +9,7 @@ import DatabaseModel.DatabaseConnection;
 import DatabaseModel.Tables.Product;
 import DatabaseModel.Tables.Purchase;
 import DatabaseModel.Tables.Sale;
+import DatabaseModel.Tables.User;
 
 public class Server {
 
@@ -26,12 +27,12 @@ public class Server {
 				e.printStackTrace();
 			}
 		} catch (IOException exception) {
-			System.out.println(exception);
+			exception.printStackTrace();
 			if (myService != null && myService.isClosed() == false) {
 				try {
 					myService.close();
 				} catch (IOException ioCloseException) {
-					System.out.println(ioCloseException);
+					ioCloseException.printStackTrace();
 				}
 			}
 		}
@@ -43,13 +44,6 @@ public class Server {
 		String formattedDate;
 		
 		myService = new ServerSocket(portNumber);
-		InputStream inp;// = myService.getInputStream();
-	    
-
-	    
-	    BufferedReader br;// = new BufferedReader(new InputStreamReader(inp));
-
-
 
 		DatabaseConnection db = new DatabaseConnection();
 		ArrayList<Product> products = new ArrayList<Product>();
@@ -93,6 +87,7 @@ public class Server {
 				try {
 					db = new DatabaseConnection();
 				} catch (SQLException exception) {
+					exception.printStackTrace();
 					System.out.println("Failed to connect to database - " + exception);
 					return;
 				}
@@ -102,17 +97,17 @@ public class Server {
 					db.closeConnection();
 					
 				} catch (SQLException exception) {
+					exception.printStackTrace();
 					System.out.println("Failed to get products for client - " + exception);
 					db.closeConnection();
 					return;
 				}
 			}
+
 			
-			 inp = s.getInputStream();
-		    
-		     br = new BufferedReader(new InputStreamReader(inp));			
-			
-		    String str1 = br.readLine();
+		    ObjectInputStream initialReader = new ObjectInputStream(s.getInputStream());
+		     
+		    String str1 = initialReader.readUTF();
 
 		    if (str1 == null)
 		    {
@@ -124,7 +119,39 @@ public class Server {
 		    System.out.println(formattedDate + " From Klient: " + str1);
 		    }
 
-			if (str1.toLowerCase().trim().equals("getproducts"))
+		    if (str1.toLowerCase().trim().equals("authenticate")) {
+		    	System.out.println("Authentication started.");
+		    	
+		    	ObjectOutputStream authenticationResponseStream = new ObjectOutputStream(s.getOutputStream());
+		    	
+		    	try {
+					User user = (User)initialReader.readObject();
+					
+					String authToken = Authentication.AuthenticationService.login(user.login, user.password);
+			
+					if (!authToken.equals("")) {
+						int userId =  Authentication.AuthenticationService.reverseAuth.get(authToken);
+						
+						authenticationResponseStream.writeBoolean(true);
+						authenticationResponseStream.flush();
+						
+						authenticationResponseStream.writeUTF(authToken);
+						authenticationResponseStream.flush();
+						
+						authenticationResponseStream.writeInt(userId);
+						authenticationResponseStream.flush();
+					}
+					else {
+						authenticationResponseStream.writeBoolean(false);
+						authenticationResponseStream.flush();
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					s.close();
+				}		    	
+		    }
+		    else if (str1.toLowerCase().trim().equals("getproducts"))
 			{
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(products);
