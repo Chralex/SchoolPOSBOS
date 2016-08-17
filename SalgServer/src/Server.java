@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import DatabaseModel.DatabaseConnection;
 import DatabaseModel.Tables.Product;
@@ -162,22 +163,22 @@ public class Server {
 			}
 			else if (str1.toLowerCase().trim().equals("sendsales"))
 			{
-				int[] soldProducts = new int[0];
+				List<Integer> soldProducts = new ArrayList<Integer>();
 	
 				ObjectInputStream oos = new ObjectInputStream(s.getInputStream());
 				try {
-					soldProducts = (int[])oos.readObject();
+					soldProducts = (List<Integer>)oos.readObject();
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				oos.close();
 				
-				Sale[] sales = new Sale[soldProducts.length];
+				Sale[] sales = new Sale[soldProducts.size()];
 				
-				for (int i = soldProducts.length - 1; i >= 0; i--) {
+				for (Integer i = soldProducts.size() - 1; i >= 0; i--) {
 					sales[i] = new Sale();
-					sales[i].productId = soldProducts[i];
+					sales[i].productId = soldProducts.get(i);
 				}
 				
 				API.SalesAPI.processSales(sales);

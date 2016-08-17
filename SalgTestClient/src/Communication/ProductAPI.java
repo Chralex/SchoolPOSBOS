@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import DatabaseModel.Tables.Product;
@@ -36,7 +37,7 @@ public class ProductAPI {
 		return products;
 	}
 	
-	public static String sendSales(int[] array) throws UnknownHostException, IOException, ClassNotFoundException
+	public static String sendSales(List<Integer> array) throws UnknownHostException, IOException, ClassNotFoundException
 	{
 		/*Socket socket = new Socket("Localhost", Client.Client.PortNumber);
 		ArrayList<Product> sales = new ArrayList<Product>();
