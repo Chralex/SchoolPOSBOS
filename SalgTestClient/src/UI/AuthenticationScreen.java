@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -55,7 +57,7 @@ public class AuthenticationScreen {
 		
 		layout.setConstraints(mainPanel, constraints);
 
-		class Listener implements MouseListener {
+		class Listener implements ActionListener, MouseListener, KeyListener {
 			
 			private AuthenticationScreen mainPanel;
 			
@@ -69,8 +71,34 @@ public class AuthenticationScreen {
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				Component[] components = ((JButton)arg0.getSource()).getParent().getComponents();
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				performLogin(((JButton)arg0.getSource()).getParent().getComponents());
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void performLogin(Component[] components) {
+
 				
 				String username = "test";
 				String password = "test";
@@ -102,24 +130,27 @@ public class AuthenticationScreen {
 			}
 
 			@Override
-			public void mouseEntered(MouseEvent arg0) {
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					performLogin(((JButton)e.getSource()).getParent().getComponents());
+		        }
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void mouseExited(MouseEvent arg0) {
+			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void mousePressed(MouseEvent arg0) {
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				
 			}	
@@ -131,6 +162,7 @@ public class AuthenticationScreen {
 		btn.setAlignmentY(GridBagConstraints.PAGE_END);
 		btn.setLocation(new Point((350 / 2) - btn.getWidth() / 2, 325));
 		btn.addMouseListener(new Listener(this));
+		btn.addKeyListener(new Listener(this));
 	
 		class fieldFoucsHandler implements FocusListener 
 		{
