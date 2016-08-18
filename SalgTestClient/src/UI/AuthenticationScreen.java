@@ -100,8 +100,8 @@ public class AuthenticationScreen {
 			public void performLogin(Component[] components) {
 
 				
-				String username = "test";
-				String password = "test";
+				String username = "";
+				String password = "";
 				
 				for (Component component : components) {
 					if (!username.equals("") && !password.equals(""))
