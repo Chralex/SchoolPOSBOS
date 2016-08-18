@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import Client.Frontend;
+
 public class AuthenticationScreen {
 
 	JFrame frame;
@@ -70,8 +72,8 @@ public class AuthenticationScreen {
 				// TODO Auto-generated method stub
 				Component[] components = ((JButton)arg0.getSource()).getParent().getComponents();
 				
-				String username = "";
-				String password = "";
+				String username = "test";
+				String password = "test";
 				
 				for (Component component : components) {
 					if (!username.equals("") && !password.equals(""))
@@ -90,8 +92,10 @@ public class AuthenticationScreen {
 
 				this.mainPanel.authStatusLabel.setVisible(true);
 				if (Communication.Authentication.LoginAPI.Login(username, password)) {
-					// Go to main screen.
+					new Frontend();
 					this.mainPanel.authStatusLabel.setText("Succesfully authenticated - Taking you to the main screen.");
+					mainPanel.frame.setVisible(false);
+					mainPanel.frame.dispose();
 				}
 				else
 					this.mainPanel.authStatusLabel.setText("Invalid username or password.");
